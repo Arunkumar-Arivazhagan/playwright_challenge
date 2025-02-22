@@ -29,7 +29,7 @@ test.describe('Bug Report Form', () => {
     await DriverUtils.closeBrowser(browser); // No try/catch needed here, as closing errors are usually not critical
   });
 
-  test('Page loads and elements are present', async () => {
+  test('Checking if the elements are loading', async () => {
     try {
       await expect(spotTheBugPage.firstNameInput).toBeVisible();
       await expect(spotTheBugPage.lastNameInput).toBeVisible();
