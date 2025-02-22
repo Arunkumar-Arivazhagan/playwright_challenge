@@ -21,12 +21,12 @@ test.describe('Bug Report Form', () => {
       await spotTheBugPage.navigateTo(baseURL);
     } catch (error) {
       console.error('Error in beforeEach hook:', error);
-      throw error; // Fail the test if setup fails
+      throw error;
     }
   });
 
   test.afterEach(async () => {
-    await DriverUtils.closeBrowser(browser); // No try/catch needed here, as closing errors are usually not critical
+    await DriverUtils.closeBrowser(browser);
   });
 
   test('Checking if the elements are loading', async () => {
@@ -38,7 +38,7 @@ test.describe('Bug Report Form', () => {
       await expect(spotTheBugPage.emailInput).toBeVisible();
       await expect(spotTheBugPage.passwordInput).toBeVisible();
       await expect(spotTheBugPage.termsAndConditionsCheckbox).toBeVisible();
-      await expect(spotTheBugPage.registerButton).toBeVisible(); // Check for register button
+      await expect(spotTheBugPage.registerButton).toBeVisible();
     } catch (error) {
       console.error('Error checking element visibility:', error);
       throw error;

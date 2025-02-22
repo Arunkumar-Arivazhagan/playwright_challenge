@@ -44,7 +44,7 @@ class SpotTheBugPage {
       await this.page.goto(baseURL);
     } catch (error) {
       console.error(`Error navigating to ${baseURL}:`, error);
-      throw error; // Re-throw to be handled by the test
+      throw error;
     }
   }
 
