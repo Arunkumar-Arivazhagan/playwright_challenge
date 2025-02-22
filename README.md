@@ -11,7 +11,7 @@
 * **`.github/workflows`**: This directory contains workflow files for GitHub Actions, automating CI/CD processes. `docker-ci-cd.yml` likely defines the workflow for building and deploying the Docker container.
 * **`docker-compose.yml`**: Defines how the different Docker containers in your application work together (if using multiple containers). Helpful for local development and testing.
 * **`Dockerfile`**: Contains instructions for building the Docker image for your application.
-* **`package.json` and `package-lock.json`**: These files manage project dependencies for Node.js (likely for Playwright and other tools). `package.json` lists the dependencies, and `package-lock.json` ensures consistent installation across environments.
+* **`package.json` and `package-lock.json`**: `package.json` lists the dependencies, and `package-lock.json` ensures consistent installation across environments.
 * **`playwright.config.ts`**: Configuration file for Playwright, defining settings like browser options, test reporters, and timeouts.
 * **`tsconfig.json`**: Configuration file for TypeScript, defining how the TypeScript code is compiled.
 
