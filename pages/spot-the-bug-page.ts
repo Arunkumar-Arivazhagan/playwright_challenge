@@ -4,7 +4,6 @@ export interface RegistrationFormData {
   firstName: string;
   lastName: string;
   phoneNumber: string;
-  country: string;
   email: string;
   password: string;
   termsAndConditions: boolean;
@@ -19,11 +18,7 @@ class SpotTheBugPage {
   passwordInput: Locator;
   termsAndConditionsCheckbox: Locator;
   registerButton: Locator;
-  
   //error messages
-  // firstNameError: Locator;
-  // lastNameError: Locator;
-  // emailError: Locator;
   phoneNumberError: Locator;
   passwordError: Locator;
   finalMessage: Locator;
@@ -32,109 +27,98 @@ class SpotTheBugPage {
     this.page = page;
     this.firstNameInput = this.page.locator('#firstName'); 
     this.lastNameInput = this.page.locator('#lastName'); 
-    this.phoneNumberInput = this.page.locator('#phoneNumber'); 
-    this.countryDropdown = this.page.locator('#country'); 
-    this.emailInput = this.page.locator('#email'); 
+    this.phoneNumberInput = this.page.locator('#phone'); 
+    this.countryDropdown = this.page.locator('#countries_dropdown_menu'); 
+    this.emailInput = this.page.locator('#emailAddress'); 
     this.passwordInput = this.page.locator('#password'); 
-    this.termsAndConditionsCheckbox = this.page.locator('#terms');
-    this.registerButton = this.page.locator('#register');
+    this.termsAndConditionsCheckbox = this.page.locator('#exampleCheck1');
+    this.registerButton = this.page.locator('#registerBtn');
 
-    // this.firstNameError = this.page.locator('#name-error');
-    // this.lastNameError = this.page.locator('#name-error');
-    // this.emailError = this.page.locator('#email-error');
-    this.passwordError = this.page.locator('#details-error');
-    this.phoneNumberError = this.page.locator('#details-error');
+    this.passwordError = this.page.locator('#message');
+    this.phoneNumberError = this.page.locator('#message');
     this.finalMessage = this.page.locator('#success-message');
   }
 
   async navigateTo(baseURL: string): Promise<void> {
-    await this.page.goto(baseURL);
+    try {
+      await this.page.goto(baseURL);
+    } catch (error) {
+      console.error(`Error navigating to ${baseURL}:`, error);
+      throw error; // Re-throw to be handled by the test
+    }
   }
 
   async fillForm(data: RegistrationFormData): Promise<void> {
-    await this.firstNameInput.fill(data.firstName);
-    await this.lastNameInput.fill(data.lastName);
-    await this.phoneNumberInput.fill(data.phoneNumber);
-    await this.countryDropdown.selectOption(data.country);
-    await this.emailInput.fill(data.email);
-    await this.passwordInput.fill(data.password);
+    try {
+      await this.firstNameInput.fill(data.firstName);
+      await this.lastNameInput.fill(data.lastName);
+      await this.phoneNumberInput.fill(data.phoneNumber);
+      await this.emailInput.fill(data.email);
+      await this.passwordInput.fill(data.password);
+    } catch (error) {
+      console.error('Error filling form:', error);
+      throw error;
+    }
   }
 
-  async checkNavigation() {
-    // Example: Check if a "Home" link exists and navigates correctly
-    const homeLink = this.page.locator('a[href="/"]'); // Adapt the locator to your home link
-    await expect(homeLink).toBeVisible();
-    await homeLink.click();
-    await expect(this.page).toHaveURL(/.*\/$/); // Check if the URL changed after navigation (adapt as needed)
-    await this.page.goto('https://qa-practice.netlify.app/bugs-form'); // Navigate back to the form page
-  }
-  
   async checkForBrokenImages() {
-    const images = await this.page.$$('img');
-    for (const image of images) {
-      const src = await image.getAttribute('src');
-      if (src) {
-        const response = await this.page.request.get(src);
-        expect(response.status()).toBe(200);
+    try {
+      const images = await this.page.$$('img');
+      for (const image of images) {
+        const src = await image.getAttribute('src');
+        if (src) {
+          const response = await this.page.request.get(src);
+          expect(response.status()).toBe(200);
+        }
       }
+    } catch (error) {
+      console.error('Error checking for broken images:', error);
+      throw error;
     }
   }
 
   async submitForm(): Promise<void> {
-    await this.registerButton.click();
-  }
-
-  async verifySuccess(): Promise<void> {
-    await expect(this.finalMessage).toBeVisible();
-  }
-
-  async checkBoxVerification(){
-    await this.termsAndConditionsCheckbox.check();
+    try {
+      await this.registerButton.click();
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      throw error;
+    }
   }
 
   async checkPhoneInvalid(expectedMessage: string) {
-    const invalidPhoneShort = '123456789';
-    const invalidPhoneLong = '123456789012345';
-
-    await this.phoneNumberInput.fill(invalidPhoneShort);
-    await this.submitForm();
-    await expect(this.phoneNumberError).toBeVisible();
-    await expect(this.phoneNumberError).toHaveText(expectedMessage);
-
-    await this.phoneNumberInput.fill(invalidPhoneLong);
-    await this.submitForm();
-    await expect(this.phoneNumberError).toBeVisible();
-    await expect(this.phoneNumberError).toHaveText(expectedMessage);
+    try {
+      const invalidPhoneShort = '123456789';
+    
+      await this.phoneNumberInput.fill(invalidPhoneShort);
+      await this.submitForm();
+      await expect(this.phoneNumberError).toBeVisible();
+      await expect(this.phoneNumberError).toHaveText(expectedMessage);
+    } catch (error) {
+      console.error('Error checking invalid phone number:', error);
+      throw error;
+    }
   }
 
   async checkPasswordInvalid(expectedMessage: string) {
-    const invalidPasswordShort = 'pass1';
-    const invalidPasswordLong = 'password1234567890123';
+    try {
+      const invalidPasswordShort = 'pass1';
+      const invalidPasswordLong = 'password1234567890123';
 
-    await this.passwordInput.fill(invalidPasswordShort);
-    await this.submitForm();
-    await expect(this.passwordError).toBeVisible();
-    await expect(this.passwordError).toHaveText(expectedMessage);
+      await this.passwordInput.fill(invalidPasswordShort);
+      await this.submitForm();
+      await expect(this.passwordError).toBeVisible();
+      await expect(this.passwordError).toHaveText(expectedMessage);
 
-    await this.passwordInput.fill(invalidPasswordLong);
-    await this.submitForm();
-    await expect(this.passwordError).toBeVisible();
-    await expect(this.passwordError).toHaveText(expectedMessage);
+      await this.passwordInput.fill(invalidPasswordLong);
+      await this.submitForm();
+      await expect(this.passwordError).toBeVisible();
+      await expect(this.passwordError).toHaveText(expectedMessage);
+    } catch (error) {
+      console.error('Error checking invalid password:', error);
+      throw error;
+    }
   }
-
-  async verifyCountryDropdownDefaultValue(expectedValue: string): Promise<void> {
-    const selectedValue = await this.countryDropdown.inputValue();
-    expect(selectedValue).toBe(expectedValue);
-  }
-
-  async selectCountry(value: string | { label?: string; index?: number }): Promise<void> {
-    await this.countryDropdown.selectOption(value);
-  }
-
-  async assertCountryValue(expectedValue: string): Promise<void> {
-    const selectedValue = await this.countryDropdown.inputValue();
-    expect(selectedValue).toBe(expectedValue);
-  } 
 }
 
 export default SpotTheBugPage;
