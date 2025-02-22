@@ -1,0 +1,6 @@
+version: "3.9"
+services:
+  playwright-app:
+    image: arun0410/playwright-challenge:latest
+    stdin_open: true
+    tty: true
