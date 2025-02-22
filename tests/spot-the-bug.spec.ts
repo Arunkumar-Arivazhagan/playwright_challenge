@@ -26,8 +26,8 @@ test.describe('Bug Report Form', () => {
 
   test('Submitting the form with all required fields filled', async () => {
     const testData: RegistrationFormData = {
-      firstName: '', // Missing first name
-      lastName: 'User',
+      firstName: 'John',
+      lastName: 'Smith',
       phoneNumber: '123-456-7890',
       country: 'United States',
       email: 'test@example.com',
@@ -37,12 +37,12 @@ test.describe('Bug Report Form', () => {
 
     await spotTheBugPage.fillForm(testData);
     await spotTheBugPage.submitForm();
-    await spotTheBugPage.verifySuccess(); // Implement verification logic
+    await spotTheBugPage.verifySuccess();
   });
 
   test('Submitting the form with missing required fields', async () => {
     const testData: RegistrationFormData = {
-      firstName: '', // Missing first name
+      firstName: '',
       lastName: 'User',
       phoneNumber: '123-456-7890',
       country: 'United States',
@@ -60,8 +60,8 @@ test.describe('Bug Report Form', () => {
     const testData: RegistrationFormData = {
       firstName: 'Test',
       lastName: 'User',
-      phoneNumber: '123-456-7890',
-      country: 'United States',
+      phoneNumber: '',
+      country: '',
       email: 'invalid-email', // Invalid email
       password: 'password123',
       termsAndConditions: true,

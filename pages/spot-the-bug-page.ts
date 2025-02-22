@@ -57,6 +57,15 @@ class SpotTheBugPage {
     }
   }
 
+  async checkNavigation() {
+    // Example: Check if a "Home" link exists and navigates correctly
+    const homeLink = this.page.locator('a[href="/"]'); // Adapt the locator to your home link
+    await expect(homeLink).toBeVisible();
+    await homeLink.click();
+    await expect(this.page).toHaveURL(/.*\/$/); // Check if the URL changed after navigation (adapt as needed)
+    await this.page.goto('https://qa-practice.netlify.app/bugs-form'); // Navigate back to the form page
+}
+
   async submitForm(): Promise<void> {
     await this.registerButton.click();
   }
@@ -71,12 +80,53 @@ class SpotTheBugPage {
     await expect(this.detailsError).toBeVisible();
   }
 
-  async verifyEmailError(): Promise<void> {
+  async verifyEmailError() {
     await expect(this.emailError).toBeVisible();
   }
 
-  async checkSpecialCharacters(password: string): Promise<void> {
-    await this.passwordInput.fill(password);
+  async checkPhoneValidation() {
+    const validPhone = '1234567890';
+    const invalidPhoneShort = '123456789';
+    const invalidPhoneLong = '123456789012345';
+
+    await this.phoneNumberInput.fill(invalidPhoneShort);
+    await this.submitForm();
+    // Check for specific error message related to phone number length
+
+    await this.phoneNumberInput.fill(invalidPhoneLong);
+    await this.submitForm();
+    // Check for specific error message related to phone number length
+
+    await this.phoneNumberInput.fill(validPhone);
+    // Optionally, clear the error or proceed with valid submission
+  }
+
+  async checkForBrokenImages() {
+    const images = await this.page.$$('img');
+    for (const image of images) {
+      const src = await image.getAttribute('src');
+      if (src) {
+        const response = await this.page.request.get(src);
+        expect(response.status()).toBe(200);
+      }
+    }
+  }
+
+  async checkPasswordValidation() {
+    const validPassword = 'password123';
+    const invalidPasswordShort = 'pass1';
+    const invalidPasswordLong = 'password1234567890123';
+
+    await this.passwordInput.fill(invalidPasswordShort);
+    await this.submitForm();
+    // Check for specific error message related to password length
+
+    await this.passwordInput.fill(invalidPasswordLong);
+    await this.submitForm();
+    // Check for specific error message related to password length
+
+    await this.passwordInput.fill(validPassword);
+    // Optionally, clear the error or proceed with valid submission
   }
 
   async verifyCountryDropdownDefaultValue(expectedValue: string): Promise<void> {
